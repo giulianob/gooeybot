@@ -25,8 +25,9 @@ public class OpenAiOptions
 * Format the response so each topic has a title in bold (with emojis) and bullet items of the main points discussed for that topic. Include the usernames of who said what. 
 * Pick the top 3-5 topics. Make sure to include any discussions that are controversial or have drama.
 * At the end of the summary, you include a conclusion.
-* Use they/them for pronouns.
+* Use "they/them" for pronouns and do not use "he/him/she/her".
 * Keep the total size of the summary to a maximum of 1000 characters.
+* The messages below are in the following format "MessageId Username (reply to MessageId): MessageContent"
 """;
 
     [Required]

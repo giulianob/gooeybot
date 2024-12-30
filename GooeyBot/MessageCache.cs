@@ -67,7 +67,7 @@ public partial class MessageCache
                 // this isnt a perfect check but its good enough
                 if (cacheItem.Messages.Last?.Value.Id == message.Id)
                 {
-                    return;
+                    continue;
                 }
 
                 if (await ConvertMessage(message) is { } cacheMessage)
@@ -87,6 +87,7 @@ public partial class MessageCache
             finally
             {
                 cacheItem.Semaphore.Release();
+                _logger.LogInformation("Exiting background channel processor for {Channel}", cacheItem.Name);
             }
         }
     }

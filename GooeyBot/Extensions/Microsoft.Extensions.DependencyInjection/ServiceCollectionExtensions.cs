@@ -1,5 +1,6 @@
 ﻿// Licensed under the Apache License, Version 2.0 (the "License");
 
+using System.Text;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
@@ -24,8 +25,9 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<DiscordSocketClient>(s => new(new DiscordSocketConfig
         {
-            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent,
-            UseInteractionSnowflakeDate = false
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent | GatewayIntents.GuildMembers,
+            UseInteractionSnowflakeDate = false,
+            AlwaysDownloadUsers = true,
         }));
 
         services.AddSingleton<OpenAIClient>(s =>

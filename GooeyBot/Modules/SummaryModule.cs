@@ -2,6 +2,7 @@
 
 using System.Text;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
@@ -23,7 +24,7 @@ public class SummaryModule(
     {
         if (Context.Channel.ChannelType != ChannelType.Text)
         {
-            await FollowupAsync("This command only works in text channels", ephemeral: true);
+            await RespondAsync("This command only works in text channels", ephemeral: true);
             return;
         }
 
@@ -31,7 +32,7 @@ public class SummaryModule(
 
         if (maybeCacheItem.HasValue)
         {
-            await FollowupAsync("I've already summarized too recently", ephemeral: true);
+            await RespondAsync("I've already summarized too recently", ephemeral: true);
             return;
         }
 
@@ -75,7 +76,8 @@ public class SummaryModule(
 
         foreach (var message in messages)
         {
-            sb.AppendLine($"{message.Author}: {message.Content}");
+            sb.AppendLine(message.ToString());
+            sb.AppendLine();
         }
 
         var chat = sb.ToString();
@@ -101,7 +103,9 @@ public class SummaryModule(
 
             string? summary = completion.FinishReason switch
             {
-                ChatFinishReason.Stop => completion.Content[0].Text[..Math.Min(completion.Content[0].Text.Length, 1_950)],
+                ChatFinishReason.Stop =>
+                    // Discord limits to 2k characters
+                    completion.Content[0].Text[..Math.Min(completion.Content[0].Text.Length, 1_950)],
                 ChatFinishReason.Length => "Incomplete output. Fix this.",
                 ChatFinishReason.ContentFilter => "I couldn't summarize the chat because of a content filter :sob:",
                 _ => $"Hit a {completion.FinishReason} issue"
